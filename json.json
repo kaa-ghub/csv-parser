@@ -1,0 +1,17 @@
+[ {
+  "id" : "1",
+  "amount" : "100",
+  "currency" : "USD",
+  "comment" : "оплата заказа",
+  "filename" : "cvsValid.cvs",
+  "line" : 1,
+  "result" : "OK"
+}, {
+  "id" : "2",
+  "amount" : "300",
+  "currency" : "USD",
+  "comment" : "оплата заказа 2",
+  "filename" : "cvsValid.cvs",
+  "line" : 2,
+  "result" : "OK"
+} ]
