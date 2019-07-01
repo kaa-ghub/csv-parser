@@ -13,8 +13,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -38,8 +40,9 @@ public class ApplicationTests {
 	}
 
 	@Test
-	public void whenLoadingFromCsvFile_thenLoadStringArray(){
-		Iterator<String[]> strings = parser.loadObjectList("cvsValid.cvs");
+	public void whenLoadingFromCsvFile_thenLoadStringArray() throws IOException {
+		File file = new ClassPathResource("cvsValid.cvs").getFile();
+		Iterator<String[]> strings = parser.loadObjectList(file);
 		String line;
 		String[] expected = VALID_STRING.split(",");
 		Assert.assertTrue(strings.hasNext());
@@ -47,8 +50,9 @@ public class ApplicationTests {
 	}
 
 	@Test
-	public void whenLoadingFromNotValidCsvFile_thenLoadStringArrayWithError(){
-		Iterator<String[]> strings = parser.loadObjectList("cvsNotValid.cvs");
+	public void whenLoadingFromNotValidCsvFile_thenLoadStringArrayWithError() throws IOException {
+		File file = new ClassPathResource("cvsNotValid.cvs").getFile();
+		Iterator<String[]> strings = parser.loadObjectList(file);
 		String line;
 		String[] expected = VALID_STRING.split(",");
 		Collection<InputWithFileDto> collection = dataLoader.load(strings, "cvsValid.cvs");
@@ -59,9 +63,10 @@ public class ApplicationTests {
 
 	@Test
 	public void whenLoadingOrdersFromCsvFile_thenLoadInputList() throws IOException {
-		String file = "cvsValid.cvs";
+		String fileString = "cvsValid.cvs";
+		File file = new ClassPathResource(fileString).getFile();
 		Iterator<String[]> strings = parser.loadObjectList(file);
-		Collection<InputWithFileDto> collection = dataLoader.load(strings, file);
+		Collection<InputWithFileDto> collection = dataLoader.load(strings, fileString);
 		Collection<ResponseDto> responseDtos = dataLoader.handleRequest(collection);
 		String json = jsonConverter.toJson(responseDtos);
 		Assert.assertNotNull(json);

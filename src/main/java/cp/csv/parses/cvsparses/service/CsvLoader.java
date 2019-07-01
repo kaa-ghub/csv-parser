@@ -1,7 +1,8 @@
 package cp.csv.parses.cvsparses.service;
 
+import java.io.File;
 import java.util.Iterator;
 
 public interface CsvLoader {
-    public Iterator<String[]> loadObjectList(String fileName);
+    Iterator<String[]> loadObjectList(File file);
 }

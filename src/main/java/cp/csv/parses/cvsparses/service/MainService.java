@@ -1,6 +1,5 @@
 package cp.csv.parses.cvsparses.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import cp.csv.parses.cvsparses.config.AppProperties;
 import cp.csv.parses.cvsparses.dto.InputWithFileDto;
 import cp.csv.parses.cvsparses.dto.ResponseDto;
@@ -9,11 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLOutput;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -28,15 +28,22 @@ public class MainService {
     @Autowired
     JsonConverter jsonConverter;
     @Autowired
-    private ApplicationArguments applicationArguments;
+    private ApplicationArguments arguments;
     @Autowired
     AppProperties appProperties;
 
     @EventListener({ContextRefreshedEvent.class})
     void parse() throws IOException {
-        String file = appProperties.getInputFile();
+        File file = null;
+        if (arguments.getSourceArgs().length > 0) {
+            String sourcePath = arguments.getSourceArgs()[0];
+            file = new File(sourcePath);
+        } else {
+            file = new ClassPathResource(appProperties.getInputFile()).getFile();
+        }
+
         Iterator<String[]> strings = parser.loadObjectList(file);
-        Collection<InputWithFileDto> collection = dataLoader.load(strings, file);
+        Collection<InputWithFileDto> collection = dataLoader.load(strings, file.getName());
         Collection<ResponseDto> responseDtos = dataLoader.handleRequest(collection);
         System.out.println(jsonConverter.toJson(responseDtos));
     }

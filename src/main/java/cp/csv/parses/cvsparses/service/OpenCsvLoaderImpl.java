@@ -15,9 +15,8 @@ import java.util.Iterator;
 @Slf4j
 public class OpenCsvLoaderImpl implements CsvLoader {
     @Override
-    public Iterator<String[]> loadObjectList(String fileName) {
+    public Iterator<String[]> loadObjectList(File file) {
         try {
-            File file = new ClassPathResource(fileName).getFile();
             try (CSVReader reader = new CSVReader(new FileReader(file))) {
                 return reader.iterator();
             }
